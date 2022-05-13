@@ -1,11 +1,11 @@
 import json
-from numpy import *
+from numpy import * #38 15 10 12 62 46 25 56 27 24 23 21 20 25 38 27 48 35 50 65 59 58 47 42 37 35 32 40 28 14 12 24 66 73 72 70 68 65 54 48 34 33 21 19 61 59 47 46 30 30
 #Datos Ejemplo 1: 782 1333 515 1575 696 832 1052 700 987 542 1296 704 814 1482 1023 739 643 956 1023 784
 #Datos Ejemplo 2: 1.82 1.43 1.51 1.47 1.69 1.88 1.52 1.72 1.78 1.54 1.61 1.66 1.70 1.81 1.58 1.48 1.53 1.73 1.61 1.56 1.57 1.78
 array_num = []
 array_str = []
 datos = input("Ingresa una lista de datos\nDatos: ")
-diferencia_l_superior = float(input("Ingrese la diferencia que tendran los limites superiores: "))
+unidad_variacion = float(input("Ingrese el valor de la unidad de variación: "))
 array_str = datos.split(" ")
 for dato in array_str:
     if(dato.isdigit()):
@@ -24,10 +24,11 @@ def calcularRango(array_num, k):
     print("Rango: {:.2f}".format(r))
     calcularAmplitud(r, k)
 def calcularAmplitud(rango, k):
-    a = rango/k
-    print("Amplitud: ", a)
-    crearTabla(array_num,a,k)
-def crearTabla(array_num, a,k):
+    a_calc = (rango/k)
+    print("Amplitud (segun la formula): ", a_calc)
+    a_new = float(input("Ingrese el nuevo valor de la amplitud: "))
+    crearTabla(array_num,a_new,k,a_calc)
+def crearTabla(array_num, a,k, a_calc):
     limite_i = array_num[0]
     frecuencia = 0
     f_acumulada = 0
@@ -37,6 +38,8 @@ def crearTabla(array_num, a,k):
         "clase" : "A",
         "l_inferior" : 0,
         "l_superior" : 0,
+        "l_inf_exacto" : 0,
+        "l_sup_exacto" : 0,
         "frecuencia" : 0,
         "f_relativa" : 0,
         "f_acumulada" : 0,
@@ -46,13 +49,22 @@ def crearTabla(array_num, a,k):
     for x in range(k): #repite una vez por clase
         fila["clase"] = chr(65+x)
         fila["l_inferior"] = limite_i + (x*a)
-        if(x!=k-1):
-            fila["l_superior"] = (limite_i + ((x+1)*a))-diferencia_l_superior
+        if(x==0):
+            fila["l_superior"] = (limite_i + ((x+1)*a))-unidad_variacion
         else:
-            fila["l_superior"] = (limite_i + ((x+1)*a))
+            fila_anterior = json.loads(filas[x-1])
+            if(a==a_calc):
+                if(x!=k-1):
+                    fila["l_superior"] = (limite_i + ((x+1)*a))-unidad_variacion
+                else:
+                    fila["l_superior"] = (limite_i + ((x+1)*a))
+            else:
+                fila["l_superior"] = fila_anterior["l_superior"] + a
         for num in array_num:
             if(num>= fila["l_inferior"] and num<=fila["l_superior"]):
                 frecuencia+=1
+        fila["l_inf_exacto"] = fila["l_inferior"] - (unidad_variacion/2)
+        fila["l_sup_exacto"] = fila["l_superior"] + (unidad_variacion/2)
         fila["frecuencia"] = frecuencia
         frecuencia=0
         fila["f_relativa"]= fila["frecuencia"]/len(array_num)
@@ -62,16 +74,18 @@ def crearTabla(array_num, a,k):
         f_complementaria+=fila["frecuencia"] 
         fila["f_complementaria"] = len(array_num) - f_complementaria
         filas.append(json.dumps(fila))
-    print("{:<8} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15}".format("Clase","L. inferior","L. superior","Frecuencia","F. relativa","F. acumulada","Marca clase","F. complementaria"))
+    print("{:<8} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15} {:<20} {:<20} {:<20}".format("Clase","L. inferior","L. superior","Frecuencia","F. relativa","F. acumulada","Marca clase","F. complementaria", "Lim. inf. exacto","Lim. sup. exacto"))
     for fila in filas:
         fila = json.loads(fila)
         clase = fila["clase"]
         l_inferior = fila["l_inferior"]
         l_superior = fila["l_superior"]
+        l_inf_exacto = fila["l_inf_exacto"]
+        l_sup_exacto = fila["l_sup_exacto"]
         frecuencia = fila["frecuencia"]
         f_relativa = fila["f_relativa"]
         f_acumulada = fila["f_acumulada"]
         marca = fila["marca_clase"]
         f_complementaria = fila["f_complementaria"]
-        print("{:^6} {:^15,.2f} {:^15,.2f} {:^13} {:^20,.5f} {:^10} {:^20,.3f} {:^15}".format( clase, l_inferior, l_superior,frecuencia,f_relativa,f_acumulada,marca,f_complementaria))
+        print("{:^6} {:^15,.2f} {:^15,.2f} {:^13} {:^20,.5f} {:^10} {:^20,.3f} {:^15} {:^25,.2f} {:^15,.2f}".format( clase, l_inferior, l_superior,frecuencia,f_relativa,f_acumulada,marca,f_complementaria, l_inf_exacto, l_sup_exacto))
 calcularClases(array_num)
