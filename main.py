@@ -44,7 +44,8 @@ def crearTabla(array_num, a,k, a_calc):
         "f_relativa" : 0,
         "f_acumulada" : 0,
         "marca_clase" : 0,
-        "f_complementaria" : 0
+        "f_complementaria" : 0,
+        "angulos_grafica_circular": 0
     }
     for x in range(k): #repite una vez por clase
         fila["clase"] = chr(65+x)
@@ -73,8 +74,9 @@ def crearTabla(array_num, a,k, a_calc):
         fila["marca_clase"] = (fila["l_inferior"] + fila["l_superior"])/2
         f_complementaria+=fila["frecuencia"] 
         fila["f_complementaria"] = len(array_num) - f_complementaria
+        fila["angulos_grafica_circular"] = (fila["frecuencia"] * 360)/len(array_num)
         filas.append(json.dumps(fila))
-    print("{:<8} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15} {:<20} {:<20} {:<20}".format("Clase","L. inferior","L. superior","Frecuencia","F. relativa","F. acumulada","Marca clase","F. complementaria", "Lim. inf. exacto","Lim. sup. exacto"))
+    print("{:<8} {:<15} {:<15} {:<15} {:<15} {:<15} {:<15} {:<20} {:<20} {:<20} {:<10}".format("Clase","L. inferior","L. superior","Frecuencia","F. relativa","F. acumulada","Marca clase","F. complementaria", "Lim. inf. exacto","Lim. sup. exacto","Angulos grafica circular"))
     for fila in filas:
         fila = json.loads(fila)
         clase = fila["clase"]
@@ -87,5 +89,7 @@ def crearTabla(array_num, a,k, a_calc):
         f_acumulada = fila["f_acumulada"]
         marca = fila["marca_clase"]
         f_complementaria = fila["f_complementaria"]
-        print("{:^6} {:^15,.2f} {:^15,.2f} {:^13} {:^20,.5f} {:^10} {:^20,.3f} {:^15} {:^25,.2f} {:^15,.2f}".format( clase, l_inferior, l_superior,frecuencia,f_relativa,f_acumulada,marca,f_complementaria, l_inf_exacto, l_sup_exacto))
+        angulos = fila["angulos_grafica_circular"]
+        print("{:^6} {:^15,.2f} {:^15,.2f} {:^13} {:^20,.5f} {:^10} {:^20,.3f} {:^15} {:^25,.2f} {:^15,.2f} {:^28,.2f}".format( clase, l_inferior, l_superior,frecuencia,f_relativa,f_acumulada,marca,f_complementaria, l_inf_exacto, l_sup_exacto, angulos))
+    
 calcularClases(array_num)
