@@ -1,4 +1,5 @@
 import json
+import MedidasDeTendenciaCentral
 from numpy import * #38 15 10 12 62 46 25 56 27 24 23 21 20 25 38 27 48 35 50 65 59 58 47 42 37 35 32 40 28 14 12 24 66 73 72 70 68 65 54 48 34 33 21 19 61 59 47 46 30 30
 #Datos Ejemplo 1: 782 1333 515 1575 696 832 1052 700 987 542 1296 704 814 1482 1023 739 643 956 1023 784
 #Datos Ejemplo 2: 1.82 1.43 1.51 1.47 1.69 1.88 1.52 1.72 1.78 1.54 1.61 1.66 1.70 1.81 1.58 1.48 1.53 1.73 1.61 1.56 1.57 1.78
@@ -91,5 +92,38 @@ def crearTabla(array_num, a,k, a_calc):
         f_complementaria = fila["f_complementaria"]
         angulos = fila["angulos_grafica_circular"]
         print("{:^6} {:^15,.2f} {:^15,.2f} {:^13} {:^20,.5f} {:^10} {:^20,.3f} {:^15} {:^25,.2f} {:^15,.2f} {:^28,.2f}".format( clase, l_inferior, l_superior,frecuencia,f_relativa,f_acumulada,marca,f_complementaria, l_inf_exacto, l_sup_exacto, angulos))
-    
+    # print("\nCopiar y pegar datos: \nNumero de clases: ",k)
+    # print("Limites inferiores: ", end=" ")
+    array_datos = [0*j for j in range(5)]
+    array_lim_inf = [0*j for j in range(k)]
+    array_lim_sup = [0*j for j in range(k)]
+    array_marcas = [0*j for j in range(k)]
+    array_frec = [0*j for j in range(k)]
+    array_frec_ac = [0*j for j in range(k)]
+    for i in range(k):
+        array_lim_inf[i] = (json.loads(filas[i])["l_inf_exacto"])
+        # print(json.loads(filas[i])["l_inf_exacto"], end=" ")
+        array_datos[0] = array_lim_inf
+    # print("\nLimites superiores: ",end=" ")
+    for i in range(k):
+        array_lim_sup[i] = json.loads(filas[i])["l_sup_exacto"]
+        # print(json.loads(filas[i])["l_sup_exacto"], end=" ")
+    array_datos[1] = array_lim_sup
+    # print("\nMarca de la clase: ", end=" ")
+    for i in range(k):
+        array_marcas[i] = json.loads(filas[i])["marca_clase"]
+        # print(json.loads(filas[i])["marca_clase"], end=" ")
+    array_datos[2] = array_marcas
+    # print("\nFrecuencia absoluta: ",end=" ")
+    for i in range(k):
+        array_frec[i] = json.loads(filas[i])["frecuencia"]
+        # print(json.loads(filas[i])["frecuencia"], end=" ")
+    array_datos[3] = array_frec
+    for i in range(k):
+        array_frec_ac[i] = json.loads(filas[i])["f_acumulada"]
+        # print(json.loads(filas[i])["frecuencia"], end=" ")
+    array_datos[4] = array_frec_ac
+    MedidasDeTendenciaCentral.calcular_media(array_datos,k)
+    MedidasDeTendenciaCentral.calcular_mediana(array_datos,k)
+    MedidasDeTendenciaCentral.calcular_moda(array_datos,k)
 calcularClases(array_num)
