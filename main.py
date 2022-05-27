@@ -9,7 +9,7 @@ datos = input("Ingresa una lista de datos\nDatos: ")
 unidad_variacion = float(input("Ingrese el valor de la unidad de variación: "))
 array_str = datos.split(" ")
 for dato in array_str:
-    if(dato.isdigit()):
+    if(dato.isdigit() or len(dato)>0):
         array_num.append(float(dato))#convertir string a float
 array_num.sort() #ordena de menor a mayor
 print("Datos ordenados:")
