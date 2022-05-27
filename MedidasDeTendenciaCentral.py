@@ -1,12 +1,3 @@
-
-
-# def crear_tabla(array,n_clases,j):
-#     filas = [[j*0 for j in range(5)] for i in range(n_clases)]
-#     i=0
-#     for dato in array:
-#         if(dato.isdigit and len(dato)>0 and i<n_clases):
-#             filas[i][j] = (float(dato))
-#             i+=1
 def calcular_media(array,n_clases):
     sum = 0
     for i in range(n_clases):
